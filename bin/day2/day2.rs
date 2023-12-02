@@ -3,6 +3,57 @@ fn open_input(filename: &str) -> String {
     content
 }
 
+fn part2() {
+    let input = open_input("bin/day2/input2.txt");
+    let mut sum_of_power = 0;
+    for line in input.lines() {
+        let game_split = line.split(":").collect::<Vec<&str>>();
+        let game_info = game_split[1];
+        let sets = game_info.split(";").collect::<Vec<&str>>();
+
+        let mut min_num_blue = None;
+        let mut min_num_green = None;
+        let mut min_num_red = None;
+
+        for set in sets {
+            let cubes = set.split(",").collect::<Vec<&str>>();
+            for cube in cubes {
+                let cube_info = cube.split(" ").collect::<Vec<&str>>();
+                let num = cube_info[1]
+                    .parse::<i32>()
+                    .expect("Could not parse number of cubes into an int");
+                let color = cube_info[2];
+                match color {
+                    "blue" => {
+                        if min_num_blue.is_none()
+                            || (min_num_blue.is_some() && num > min_num_blue.unwrap())
+                        {
+                            min_num_blue = Some(num)
+                        }
+                    }
+                    "red" => {
+                        if min_num_red.is_none()
+                            || (min_num_red.is_some() && num > min_num_red.unwrap())
+                        {
+                            min_num_red = Some(num)
+                        }
+                    }
+                    "green" => {
+                        if min_num_green.is_none()
+                            || (min_num_green.is_some() && num > min_num_green.unwrap())
+                        {
+                            min_num_green = Some(num)
+                        }
+                    }
+                    _ => (),
+                }
+            }
+        }
+        sum_of_power += min_num_blue.unwrap() * min_num_red.unwrap() * min_num_green.unwrap();
+    }
+    println!("{sum_of_power}");
+}
+
 fn part1() {
     let input = open_input("bin/day2/input1.txt");
     let mut sum_of_ids = 0;
@@ -44,5 +95,6 @@ fn part1() {
 }
 
 fn main() {
-    part1()
+    part1();
+    part2();
 }
