@@ -4,7 +4,7 @@ fn open_input(filename: &str) -> String {
 }
 
 fn part2() {
-    let input = open_input("bin/day2/input2.txt");
+    let input = open_input("bin/day2/input.txt");
     let mut sum_of_power = 0;
     for line in input.lines() {
         let game_split = line.split(":").collect::<Vec<&str>>();
@@ -55,7 +55,7 @@ fn part2() {
 }
 
 fn part1() {
-    let input = open_input("bin/day2/input1.txt");
+    let input = open_input("bin/day2/input.txt");
     let mut sum_of_ids = 0;
     for line in input.lines() {
         let mut is_valid_game = true;
