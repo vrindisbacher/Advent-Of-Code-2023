@@ -6,7 +6,7 @@ fn open_input(filename: &str) -> String {
     content
 }
 
-fn get_seed_numbers(content: &String) -> Vec<u32> {
+fn get_seed_numbers(content: &String) -> Vec<i64> {
     content
         .lines()
         .nth(0)
@@ -16,7 +16,7 @@ fn get_seed_numbers(content: &String) -> Vec<u32> {
         .expect("Nothing after :")
         .trim()
         .split(" ")
-        .flat_map(|x| x.parse::<u32>())
+        .flat_map(|x| x.parse::<i64>())
         .collect()
 }
 
@@ -24,7 +24,7 @@ fn get_maps_from_input(
     content: String,
 ) -> (
     HashMap<String, String>,
-    HashMap<(String, String), Vec<(u32, u32, u32)>>,
+    HashMap<(String, String), Vec<(i64, i64, i64)>>,
 ) {
     let rest_of_input = content.lines().collect::<Vec<&str>>()[2..].join("\n");
     let rest_of_lines = rest_of_input.split("\n\n").collect::<Vec<&str>>();
@@ -58,8 +58,8 @@ fn get_maps_from_input(
         for v in rest_of_input.trim().split("\n").map(|x| {
             x.trim()
                 .split(" ")
-                .map(|x| x.parse::<u32>().expect("Value in map was not a number"))
-                .collect::<Vec<u32>>()
+                .map(|x| x.parse::<i64>().expect("Value in map was not a number"))
+                .collect::<Vec<i64>>()
         }) {
             let source_start_val = v[0];
             let dest_start_val = v[1];
@@ -91,7 +91,7 @@ fn part1() {
                     .get(&(dest.to_string(), next_dest.to_string()))
                     .expect("No map for source dest pair");
                 for (dest_start, src_start, range_len) in all_mappings {
-                    if (value >= *src_start) && value <= *range_len + *src_start {
+                    if (value >= *src_start) && value < *range_len + *src_start {
                         value = (value - *src_start) + *dest_start;
                         break;
                     }
@@ -104,7 +104,7 @@ fn part1() {
     println!("{res:?}");
 }
 
-fn seed_numbers_from_range(seed_numbers: Vec<u32>) -> Vec<u32> {
+fn seed_numbers_from_range(seed_numbers: Vec<i64>) -> Vec<i64> {
     (0..seed_numbers.len())
         .into_par_iter()
         .step_by(2)
@@ -114,7 +114,7 @@ fn seed_numbers_from_range(seed_numbers: Vec<u32>) -> Vec<u32> {
             (0..range_seed).into_par_iter().map(move |x| initial + x)
         })
         .flatten()
-        .collect::<Vec<u32>>()
+        .collect::<Vec<i64>>()
 }
 
 fn part2() {
@@ -135,7 +135,7 @@ fn part2() {
                     .get(&(dest.to_string(), next_dest.to_string()))
                     .expect("No map for source dest pair");
                 for (dest_start, src_start, range_len) in all_mappings {
-                    if (value >= *src_start) && value <= *range_len + *src_start {
+                    if (value >= *src_start) && value < *range_len + *src_start {
                         value = (value - *src_start) + *dest_start;
                         break;
                     }
