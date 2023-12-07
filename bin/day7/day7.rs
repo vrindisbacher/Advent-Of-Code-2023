@@ -67,8 +67,51 @@ fn second_ordering(h1: String, h2: String) -> Ordering {
     Ordering::Greater
 }
 
+fn part2() {
+    let content = open_input("bin/day7/input.txt");
+    let mut hands = content
+        .lines()
+        .map(|l| {
+            let hand = l.split(" ").nth(0).expect("No fst");
+            let rank = l
+                .split(" ")
+                .nth(1)
+                .expect("no snd")
+                .parse::<u64>()
+                .expect("Could not parse rank to int");
+            let unique_cards = hand.chars().collect::<HashSet<char>>();
+            match unique_cards.len() {
+                1 => Hand::FiveOfKind(hand.to_string(), rank),
+                2 => match unique_cards
+                    .into_iter()
+                    .map(|c| hand.matches(&c.to_string()).count())
+                    .max()
+                    .expect("No max")
+                {
+                    4 => Hand::FourOfKind(hand.to_string(), rank),
+                    3 => Hand::FullHouse(hand.to_string(), rank),
+                    _ => panic!("No matching case for 2 unique cards"),
+                },
+                3 => match unique_cards
+                    .into_iter()
+                    .map(|c| hand.matches(&c.to_string()).count())
+                    .max()
+                    .expect("No max")
+                {
+                    3 => Hand::ThreeOfKind(hand.to_string(), rank),
+                    2 => Hand::TwoPair(hand.to_string(), rank),
+                    _ => panic!("No matching case for 3 unique cards"),
+                },
+                4 => Hand::OnePair(hand.to_string(), rank),
+                5 => Hand::HighCard(hand.to_string(), rank),
+                _ => panic!("More than 5 unique cards"),
+            }
+        })
+}
+
 fn part1() {
     let content = open_input("bin/day7/input.txt");
+
     let mut hands = content
         .lines()
         .map(|l| {
